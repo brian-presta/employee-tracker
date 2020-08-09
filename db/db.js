@@ -12,13 +12,13 @@ const queryHandler = {
         const connection = await mysql.createConnection(credentials);
         const [rows, fields] = await connection.execute(`INSERT INTO ${table} SET ?`,data);
         await connection.close();
-        return rows
+        return rows;
     },
     async updateRecord(table,data,id) {
         const connection = await mysql.createConnection(credentials);
         const [rows, fields] = await connection.execute(`UPDATE ${table} SET ? WHERE id=${id}`,data)
         await connection.close();
-        return row
+        return rows;
     }
 }
 
