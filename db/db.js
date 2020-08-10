@@ -1,8 +1,8 @@
 const credentials = require('./credentials')
-const mysql = require("mysql2/promise")
+const mysql = require("mysql2/promise");
 
 const queryHandler = {
-    async showAll(table) {
+    async getAll(table) {
         const connection = await mysql.createConnection(credentials);
         const [rows, fields] = await connection.execute(`SELECT * FROM ${table}`);
         await connection.close();
@@ -10,9 +10,9 @@ const queryHandler = {
     },
     async addRecord(table,data) {
         const connection = await mysql.createConnection(credentials);
-        const [rows, fields] = await connection.execute(`INSERT INTO ${table} SET ?`,data);
+        await connection.execute(`INSERT INTO ${table} set ${data}`);
         await connection.close();
-        return rows;
+        return;
     },
     async updateRecord(table,data,id) {
         const connection = await mysql.createConnection(credentials);
@@ -23,3 +23,12 @@ const queryHandler = {
 }
 
 module.exports = queryHandler
+// async function init() {
+//     // await queryHandler.addRecord('employee','first_name="jeb", last_name="seb", role_id=1, manager_id=1')
+//     let x =await queryHandler.getAll('department')
+//     for (department of x) {
+//         console.log(department.name)
+//     }
+// }
+
+// init()
