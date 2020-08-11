@@ -3,7 +3,6 @@ const cTable = require("console.table")
 const queryHandler = require("./db/db")
 const questions = require("./lib/questions")
 
-
 async function menuHandler() {
     let response = await inquirer.prompt(questions.menu)
     response = response.choice.toLowerCase().split(" ")
@@ -45,14 +44,37 @@ async function addRole() {
         question[2].choices.push(department.name)
     }
     const response = await inquirer.prompt(question)
-    let departmentID = null
     for (department of departments) {
         if (department.name === response.department) {
-            departmentID = department.id
+            response.departmentID = department.id
             break
         }
     }
-    await queryHandler.addRecord('role', `title="${response.name}", salary=${response.salary}, department_id=${departmentID}`)
+    await queryHandler.addRecord('role', `title="${response.name}", salary=${response.salary}, department_id=${response.departmentID}`)
+    return await done()
+}
+async function addEmployee() {
+    let question = questions.employee 
+    const roles = await queryHandler.getAll('role')
+    const employees = await queryHandler.getAll('employee')
+    let idTracker = {}
+    for (role of roles) {
+        question[2].choices.push(role.title)
+        idTracker[role.title] = role.id
+    }
+    for (employee of employees) {
+        let answerString = `${employee.first_name} ${employee.last_name} Employee ID: ${employee.id}`
+        question[3].choices.push(answerString)
+        idTracker[[answerString]] = employee.id
+    }
+    const response = await inquirer.prompt(question)
+    question[2].choices,question[3].choices = []
+    response.roleID = idTracker[response.role]
+    response.managerID = idTracker[response.manager]
+    await queryHandler.addRecord(
+        'employee',
+        `first_name="${response.first_name}",last_name="${response.last_name}",role_id=${response.roleID},manager_id=${response.managerID}`
+    )
     return await done()
 }
 async function done() {
