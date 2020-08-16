@@ -83,6 +83,8 @@ async function addEmployee() {
         question[3].choices.push(answerString)
         idTracker[[answerString]] = employee.id
     }
+    question[3].choices.push('None')
+    idTracker['None'] = null
     const response = await inquirer.prompt(question)
     question[2].choices,question[3].choices = []
     response.roleID = idTracker[response.role]
