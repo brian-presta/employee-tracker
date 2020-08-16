@@ -1,4 +1,4 @@
-const credentials = require('./credentials')
+const credentials = require('./credentials');
 const mysql = require("mysql2/promise");
 
 const queryHandler = {
@@ -16,19 +16,10 @@ const queryHandler = {
     },
     async updateRecord(table,data,id) {
         const connection = await mysql.createConnection(credentials);
-        const [rows, fields] = await connection.execute(`UPDATE ${table} SET ? WHERE id=${id}`,data)
+        await connection.execute(`UPDATE ${table} SET ${data} WHERE id=${id}`);
         await connection.close();
-        return rows;
+        return;
     }
-}
+};
 
-module.exports = queryHandler
-// async function init() {
-//     // await queryHandler.addRecord('employee','first_name="jeb", last_name="seb", role_id=1, manager_id=1')
-//     let x =await queryHandler.getAll('department')
-//     for (department of x) {
-//         console.log(department.name)
-//     }
-// }
-
-// init()
+module.exports = queryHandler;

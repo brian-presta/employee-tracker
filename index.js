@@ -15,7 +15,7 @@ async function menuHandler() {
         return await addEntryHandler(response[2])
     }
     if (response.includes("update")) {
-        return await updateHandler(response[2])
+        return await updateRole()
     }
     console.log("Goodbye!")
     return
@@ -74,6 +74,29 @@ async function addEmployee() {
     await queryHandler.addRecord(
         'employee',
         `first_name="${response.first_name}",last_name="${response.last_name}",role_id=${response.roleID},manager_id=${response.managerID}`
+    )
+    return await done()
+}
+async function updateRole() {
+    let question = questions.updateRole
+    const employees = await queryHandler.getAll('employee')
+    const roles = await queryHandler.getAll('role')
+    let idTracker = {}
+    for (employee of employees) {
+        let answerString = `${employee.first_name} ${employee.last_name} Employee ID: ${employee.id}`
+        question[0].choices.push(answerString)
+        idTracker[[answerString]] = employee.id
+    }
+    for (role of roles) {
+        question[1].choices.push(role.title)
+        idTracker[role.title] = role.id
+    }
+    const response = await inquirer.prompt(question)
+    question[0].choices,question[1].choices = []
+    await queryHandler.updateRecord(
+        'employee',
+        `role_id=${idTracker[response.role]}`,
+        idTracker[response.employee]
     )
     return await done()
 }
