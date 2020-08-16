@@ -19,6 +19,7 @@ async function menuHandler() {
     return
 };
 async function viewAllHandler(response) {
+    console.log("\n")
     let result
     if (response.includes("departments")) {
         result = await queryHandler.getAll('department')
@@ -120,6 +121,7 @@ async function updateRole() {
 };
 async function done() {
     await inquirer.prompt(questions.done)
+    console.log("\n")
     return await menuHandler()
 };
 
