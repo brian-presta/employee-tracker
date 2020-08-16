@@ -24,16 +24,29 @@ const queryHandler = {
         const connection = await mysql.createConnection(credentials);
         const [rows,fields] = await connection.execute(
             `
-            SELECT employee.id, employee.first_name as 'first name', employee.last_name as 'last name', role.title as title, 
-            department.name as department, role.salary as salary, employee.manager_id as 'manager id'
+            SELECT e.id, e.first_name as 'first name', e.last_name as 'last name', r.title as title, 
+            d.name as department, r.salary as salary, IFNULL(CONCAT(m.first_name, ' ', m.last_name), 'N/A') as Manager 
 
-            FROM employee
-            JOIN role ON employee.role_id = role.id
-            JOIN department ON role.department_id = department.id;
+            FROM employee e
+            LEFT JOIN role r ON e.role_id = r.id
+            LEFT JOIN department d ON r.department_id = d.id
+            LEFT JOIN employee m ON m.id = e.manager_id
             `
         )
         await connection.close();
         return rows;
+    },
+    async showAllRoles() {
+        const connection = await mysql.createConnection(credentials);
+        const [rows,fields] = await connection.execute(
+            `
+            SELECT role.title as title, role.id as id, department.name as department, role.salary as salary
+            FROM role
+            JOIN department ON role.department_id = department.id 
+            `
+        )
+            await connection.close();
+            return rows;
     }
 };
 

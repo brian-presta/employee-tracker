@@ -1,7 +1,7 @@
-const inquirer = require("inquirer")
-const cTable = require("console.table")
-const queryHandler = require("./db/db")
-const questions = require("./lib/questions")
+const inquirer = require("inquirer");
+const cTable = require("console.table");
+const queryHandler = require("./db/db");
+const questions = require("./lib/questions");
 
 async function menuHandler() {
     let response = await inquirer.prompt(questions.menu)
@@ -17,7 +17,7 @@ async function menuHandler() {
     }
     console.log("Goodbye!")
     return
-}
+};
 async function viewAllHandler(response) {
     let result
     if (response.includes("departments")) {
@@ -26,7 +26,7 @@ async function viewAllHandler(response) {
         return await done()
     }
     if (response.includes('roles')) {
-        result = await queryHandler.getAll('role')
+        result = await queryHandler.showAllRoles()
         console.table(result)
         return await done()
     }
@@ -35,7 +35,7 @@ async function viewAllHandler(response) {
         console.table(result)
         return await done()
     }
-}
+};
 async function addEntryHandler(table) {
     if (table === 'department') {
         return await addDepartment()
@@ -46,7 +46,7 @@ async function addEntryHandler(table) {
     if (table === 'employee') {
         return await addEmployee()
     }
-}
+};
 async function addDepartment() {
     let response = await inquirer.prompt(questions.department)
     await queryHandler.addRecord('department',`name="${response.name}"`)
@@ -68,7 +68,7 @@ async function addRole() {
     }
     await queryHandler.addRecord('role', `title="${response.name}", salary=${response.salary}, department_id=${response.departmentID}`)
     return await done()
-}
+};
 async function addEmployee() {
     let question = questions.employee 
     const roles = await queryHandler.getAll('role')
@@ -92,7 +92,7 @@ async function addEmployee() {
         `first_name="${response.first_name}",last_name="${response.last_name}",role_id=${response.roleID},manager_id=${response.managerID}`
     )
     return await done()
-}
+};
 async function updateRole() {
     let question = questions.updateRole
     const employees = await queryHandler.getAll('employee')
@@ -115,10 +115,10 @@ async function updateRole() {
         idTracker[response.employee]
     )
     return await done()
-}
+};
 async function done() {
     await inquirer.prompt(questions.done)
     return await menuHandler()
-}
+};
 
-menuHandler()
+menuHandler();
