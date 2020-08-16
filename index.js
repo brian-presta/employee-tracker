@@ -7,9 +7,7 @@ async function menuHandler() {
     let response = await inquirer.prompt(questions.menu)
     response = response.choice.toLowerCase().split(" ")
     if (response.includes("view")) {
-        const result = await queryHandler.getAll(response[2].slice(0,-1))
-        console.table(result)
-        return await done()
+        return await viewAllHandler(response)
     }
     if (response.includes("add")) {
         return await addEntryHandler(response[2])
@@ -19,6 +17,24 @@ async function menuHandler() {
     }
     console.log("Goodbye!")
     return
+}
+async function viewAllHandler(response) {
+    let result
+    if (response.includes("departments")) {
+        result = await queryHandler.getAll('department')
+        console.table(result)
+        return await done()
+    }
+    if (response.includes('roles')) {
+        result = await queryHandler.getAll('role')
+        console.table(result)
+        return await done()
+    }
+    if (response.includes('employees')) {
+        result = await queryHandler.showAllEmployees()
+        console.table(result)
+        return await done()
+    }
 }
 async function addEntryHandler(table) {
     if (table === 'department') {
