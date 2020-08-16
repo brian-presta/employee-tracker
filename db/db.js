@@ -40,9 +40,9 @@ const queryHandler = {
         const connection = await mysql.createConnection(credentials);
         const [rows,fields] = await connection.execute(
             `
-            SELECT role.title as title, role.id as id, department.name as department, role.salary as salary
-            FROM role
-            JOIN department ON role.department_id = department.id 
+            SELECT r.title as title, r.id as 'r id', d.name as department, r.salary as salary
+            FROM role r
+            JOIN department d ON r.department_id = d.id 
             `
         )
             await connection.close();
